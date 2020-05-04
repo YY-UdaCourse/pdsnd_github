@@ -85,7 +85,7 @@ def get_filters():
 
             day = ()
 
-    print("\nHere's the day of week you selected:\n", day.title())
+    print("\nHere's the day of week you selected:\n{}\n".format(day.title()))
 
     print('-'*40)
     return city, month, day
