@@ -110,11 +110,11 @@ def load_data(city, month, day):
     # similar to practiceQ3, extract month and day of week from "Start Time" to create new columns YY
     df['month'] = df['Start Time'].dt.month
     df['day_of_week'] = df['Start Time'].dt.day_name()
-    
+
     # filter by month, if applicable
     if month != 'all':
         # use the index of months list to get the corresponding int YY
-        
+
         months = ['january', 'february', 'march', 'april', 'may', 'june']
         month = months.index(month) + 1
 
@@ -125,7 +125,7 @@ def load_data(city, month, day):
     if day != 'all':
         #filter by day of week to create the new dataframe YY
         df = df[df['day_of_week'] == day.title()]
-    
+
 
     return df
 
@@ -135,13 +135,13 @@ def time_stats(df):
 
     print('\nCalculating The Most Frequent Times of Travel...\n')
     start_time = time.time()
-    
+
     df['Start Time'] = pd.to_datetime(df['Start Time']) # convert the "Start Time" column to datetime YY
 
     print(df['month'])
     # display the most common month
     popular_month = df['month'].mode()[0]
-    
+
     print('after pop month', df['month'])
 
     print("\nMost common month:\n", int(popular_month))
@@ -160,7 +160,7 @@ def time_stats(df):
     print('\nMost popular start hour:\n', popular_hour)
 
     print("\nThis took %s seconds." % (time.time() - start_time))
-    
+
     print('-'*40)
 
 
@@ -183,7 +183,7 @@ def station_stats(df):
     # display most frequent combination of start station and end station trip
     # combine start and end station data & create new column YY
     df['Station Pair'] = df['Start Station'] + ' AND ' + df['End Station']
-    
+
     popular_station_pair = df['Station Pair'].mode()[0]
 
     print('\nMost frequent combination of start and end station per trip:\n', popular_station_pair)
@@ -200,7 +200,7 @@ def trip_duration_stats(df):
 
     # display total travel time
     # travel time is in seconds in the csv files. sum the travel times, then convert from sec to min YY
-    
+
     duration_total_min = df['Trip Duration'].sum()/60
 
     print('\nTotal travel time: {} minutes\n'.format(duration_total_min))
@@ -219,74 +219,76 @@ def user_stats(df):
 
     print('\nCalculating User Stats...\n')
     start_time = time.time()
-    
-    try: 
-        
+
+    try:
+
         # Display counts of user types
         user_types = df['User Type'].value_counts()
-    
+
         print('\nHere are the counts of user types:\n', user_types)
-    
+
         # Display counts of gender
-    
+
         sex_count = df['Gender'].value_counts()
         sex_nodata = df['Gender'].isnull().sum().sum()
-    
+
         print('\nBased on the available data, here is the breakdown of users by sex:\n', sex_count)
-        print('\nNote there were {} recorded trips without user data for sex.\n'.format(sex_nodata))  
-        
+        print('\nNote there were {} recorded trips without user data for sex.\n'.format(sex_nodata))
+
         # identify and drop rows with null values in 'Birth Year' column, convert type to string YY
         df['Birth Year'].isnull()
         birthyear_nonulls = df['Birth Year'].dropna(axis = 0).astype(str)
         birthyear_nodata = df['Birth Year'].isnull().sum().sum()
-    
+
         # Display earliest, most recent, and most common year of birth
-        
+
         oldest_birthyear = birthyear_nonulls.min()
         youngest_birthyear = birthyear_nonulls.max()
         common_birthyear = birthyear_nonulls.mode()[0]
-    
+
         print('\nThe earliest birth year is:\n', (oldest_birthyear[:4]))
         print('\nThe most recent birth year is:\n', (youngest_birthyear[:4]))
         print('\nThe most common birth year is:\n', common_birthyear[:4])
         print('\nNote there were {} recorded trips without user data for birth year.\n'.format(birthyear_nodata))
-            
-    except: 
-        
+
+    except:
+
         print("\nThere is no further user data available for your city.\n")
-            
-                    
+
+
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
-        
-    
-def raw_data(df): 
+
+
+def raw_data(df):
     """displays more data for df if user desires"""
-    
+
+    #created this function to use multiple times in program
+
     view_data = 'yes'
     n = 6
-    
-    # if user wants to view more data, add 5 more rows to view at a time    
+
+    # if user wants to view more data, add 5 more rows to view at a time
     while view_data == 'yes':
-            
+
         view_data = input("\nWould you like to view additional raw data? Enter 'yes' or 'no'.\n").lower()
-            
+
         if view_data == 'no':
-                
+
             break
-        
+
         if view_data == 'yes':
-            
+
             df.head(n)
-            
+
             print("\nHere's the data: \n", df.head(n))
 
             n = n + 5
-                
+
         else:
-        
+
             view_data = input("I'm having trouble reading your response. Please enter 'yes' to continue or 'no' to move to the next section.")
-    
+
 
 def main():
     while True:
@@ -299,7 +301,7 @@ def main():
         trip_duration_stats(df)
         raw_data(df[df.columns[3:4]])
         user_stats(df)
-      
+
 
         restart = input('\nWould you like to restart? Enter yes or no.\n')
         if restart.lower() != 'yes':
